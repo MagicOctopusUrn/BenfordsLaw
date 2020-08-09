@@ -7,16 +7,23 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.math3.exception.ZeroException;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.math3.stat.inference.TTest;
 import org.apache.commons.math3.stat.inference.TestUtils;
+import org.cc.image.HSLColor;
 
 public class UnknownImage {
 	public static void main(String[] args) throws IOException {
 		File file = new File(
-				"C:\\Users\\anony\\Desktop\\BenfordTestImages\\ezgif-4-906ffa69f7da-gif-png\\frame_33_delay-0.1s.png");
+				"C:\\Users\\anony\\Desktop\\BenfordTestImages\\SingleTest\\test.png");
 		UnknownImage bi = new UnknownImage(file);
+		for (int i : bi.getPixelRGB()) {
+			if (i != UnknownImage.MAX_PIXEL_VALUE && i != UnknownImage.MIN_PIXEL_VALUE) {
+				System.out.println(i);
+			}
+		}
 		System.out.println(bi.calculateBenfordDeviation());
 		System.out.println(bi.calculateBenfordChiSquare());
 		TTest tTest = new TTest();
@@ -27,22 +34,26 @@ public class UnknownImage {
 		System.out.println("P-t:\t" + tTest.pairedT(bi.benfordFrequencies, BenfordFactory.EXPECTED_BENFORD_FREUQNECIES));
 		System.out.println("t:\t" + tTest.t(bi.benfordFrequencies, BenfordFactory.EXPECTED_BENFORD_FREUQNECIES));
 	}
+	private final static int MAX_PIXEL_VALUE = Integer.valueOf("FFFFFF", 16);
 
+	private final static int MIN_PIXEL_VALUE = Integer.valueOf("000000", 16);
+	
 	private final File file;
-
-	private final BufferedImage image;
 
 	private final int[] pixelRGB;
 
 	private final int[] benfordCounts;
+	
+	private final int deadPixelCount;
 
 	private final double[] benfordFrequencies;
 
 	public UnknownImage(File inputImage) throws IOException {
 		this.file = inputImage;
-		this.image = ImageIO.read(this.file);
-		this.pixelRGB = new int[this.image.getWidth() * this.image.getHeight()];
-		populateRGBPixels();
+		BufferedImage image = ImageIO.read(this.file);
+		this.pixelRGB = new int[image.getWidth() * image.getHeight()];
+		populateRGBPixels(image);
+		this.deadPixelCount = calculateDeadPixelCount();
 		this.benfordCounts = new int[9];
 		populateBenfordCounts();
 		this.benfordFrequencies = new double[9];
@@ -50,30 +61,61 @@ public class UnknownImage {
 	}
 
 	private void populateBenfordFrequencies() {
-		for (int i = 0; i < this.benfordCounts.length; i++)
-			this.benfordFrequencies[i] = (100.0 * benfordCounts[i]) / this.pixelRGB.length;
+		for (int i = 0; i < this.benfordCounts.length; i++) {
+			this.benfordFrequencies[i] = (100.0 * this.benfordCounts[i])
+					/ (this.pixelRGB.length - this.deadPixelCount);
+		}
+	}
+	
+	private int calculateDeadPixelCount() {
+		int count = 0;
+		for (int x : this.pixelRGB) {
+			if (x == UnknownImage.MAX_PIXEL_VALUE || x == UnknownImage.MIN_PIXEL_VALUE) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	private void populateBenfordCounts() {
 		for (int x : this.pixelRGB) {
-			int digit = leadingDigit(x);
-			if (digit > 0)
-				benfordCounts[digit - 1]++;
+			if (x != UnknownImage.MAX_PIXEL_VALUE && x != UnknownImage.MIN_PIXEL_VALUE) {
+				int digit = leadingDigit(x); // TODO Make recursive to iterate through all digits.
+				if (digit > 0) {
+					benfordCounts[digit - 1]++;
+				}
+			}
 		}
 	}
 
-	private void populateRGBPixels() {
+	private void populateRGBPixels(BufferedImage image) {
 		int index = 0;
-		for (int x = 0; x < this.image.getWidth(); x++) {
-			for (int y = 0; y < this.image.getHeight(); y++) {
-				int rgb = this.image.getRGB(x, y);
+		for (int x = 0; x < image.getWidth(); x++) {
+			for (int y = 0; y < image.getHeight(); y++) {
+				int rgb = image.getRGB(x, y);
 				int r = (rgb >> 16) & 0xFF;
 				int g = (rgb >> 8) & 0xFF;
 				int b = rgb & 0xFF;
-				String hexRGB = Integer.toHexString(r) + Integer.toHexString(g) + Integer.toHexString(b);
-				this.pixelRGB[index + y] = Integer.valueOf(hexRGB, 16);
+				HSLColor hsl = new HSLColor(new Color(r,g,b));
+				/*--
+				 * Shitshow doesnt adhere to benfords regularly due to organization of 
+				 * color into 3 spectrums and prioritizing one over the other in numbering.
+				 * Trying to use HSL to match human vision better and possibly just multiply
+				 * the h s and l values to hash it instead.
+				String hexRGB = String.format("%02x", r)
+						+ String.format("%02x", g)
+						+ String.format("%02x", b);
+				int hexRgb = Integer.valueOf(hexRGB, 16);
+				 */
+				if (r == g && g == b && b == 0) {
+					this.pixelRGB[index + y] = UnknownImage.MIN_PIXEL_VALUE;
+				} else if (r == g && g == b && b == 255) {
+					this.pixelRGB[index + y] = UnknownImage.MAX_PIXEL_VALUE;
+				} else {
+					this.pixelRGB[index + y] = (int)(hsl.getHSL()[0] * hsl.getHSL()[1] * hsl.getHSL()[2]) / 3;
+				}
 			}
-			index += this.image.getHeight();
+			index += image.getHeight();
 		}
 	}
 
@@ -90,8 +132,8 @@ public class UnknownImage {
 		return file;
 	}
 
-	public BufferedImage getImage() {
-		return image;
+	public BufferedImage getImage() throws IOException {
+		return ImageIO.read(this.file);
 	}
 
 	public int[] getPixelRGB() {
@@ -116,7 +158,11 @@ public class UnknownImage {
 		for (int i = 0; i < BenfordFactory.EXPECTED_BENFORD_FREUQNECIES.length; i++) {
 			observed2[i] = (long)BenfordFactory.EXPECTED_BENFORD_FREUQNECIES[i];
 		}
-		return new ChiSquareTest().chiSquareTestDataSetsComparison(observed, observed2) * 100.0;
+		try {
+			return new ChiSquareTest().chiSquareTestDataSetsComparison(observed, observed2) * 100.0;
+		} catch (ZeroException ze) {
+			return 0.0;
+		}
 	}
 	
 	public double calculateBenfordDeviation() {
