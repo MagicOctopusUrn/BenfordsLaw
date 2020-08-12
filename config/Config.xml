@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConfigXML version="1.0.0">
+	<DistributionConfig>
+		<Distribution id="0" label="DEFAULT_BENFORD">
+			<Expected>
+				<Data key="1" value="30.1"/>
+				<Data key="2" value="17.6"/>
+				<Data key="3" value="12.5"/>
+				<Data key="4" value="9.7"/>
+				<Data key="5" value="7.9"/>
+				<Data key="6" value="6.7"/>
+				<Data key="7" value="5.8"/>
+				<Data key="8" value="5.1"/>
+				<Data key="9" value="4.6"/>
+			</Expected>
+			<AllowedDeviance>5.0</AllowedDeviance>
+		</Distribution>
+	</DistributionConfig>
+	<GenreConfig>
+		<Genre id="0" label="REAL_IMAGE">
+			<Description>
+				Real images are images that are unaltered, cumulative interpretations of photons hitting a detector plate. 
+				These images are not suspected to have been altered in any way, have not been passed through filters and
+				were not created from scratch and should be natural images.
+			</Description>
+			<Distributions>
+				<Distribution>0</Distribution>
+			</Distributions>
+		</Genre>
+		<Genre id="1" label="FABRICATED_IMAGE">
+			<Description>
+				Fabricated images are images that were created from scratch, likely distributions that are skewed heavily
+				in favor of a lower number of colors will result in this being triggered. For instance a black and white
+				image with no major color variance (and large color localities) may trigger this. 
+			</Description>
+			<Distributions>
+				<Distribution>0</Distribution>
+			</Distributions>
+		</Genre>
+	</GenreConfig>
+	<AlterationConfig>
+	
+	</AlterationConfig>
+</ConfigXML>
