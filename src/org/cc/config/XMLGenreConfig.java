@@ -1,15 +1,21 @@
 package org.cc.config;
 
 import org.cc.categorization.Genre;
-import org.w3c.dom.Node;
+import org.jdom2.Element;
 
 public class XMLGenreConfig extends XMLConfigEntry<Genre> {
-	public XMLGenreConfig(Node n) {
-		super(n);
+	private final static String NAME_TAG = "Name";
+	
+	private final static String DESCRIPTION_TAG = "Description";
+	
+	public XMLGenreConfig(Element child) {
+		super(child);
 	}
-
+	
 	@Override
-	protected Genre loadData(Node n) {
-		return null;
+	protected Genre loadData(Element e) {
+		String name = e.getChildText(XMLGenreConfig.NAME_TAG);
+		String description = e.getChildText(XMLGenreConfig.DESCRIPTION_TAG);
+		return new Genre(name, description);
 	}
 }

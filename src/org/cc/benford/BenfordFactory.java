@@ -56,7 +56,7 @@ public class BenfordFactory {
 	//     - if they do... maybe we've actually found the original source!
 	public static double[] EXPECTED_BENFORD_FREUQNECIES = {30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6};
 	
-	public static final File BENFORD_INPUT_FOLDER = new File("C:\\Users\\anony\\Desktop\\BenfordTestImages\\4KSpacePhotos");
+	public static final File BENFORD_INPUT_FOLDER = new File("C:\\Users\\anony\\Desktop\\BenfordTestImages\\500WallPaperTest");
 	
 	public static final File BENFORD_OUTPUT_FOLDER = new File("C:\\Users\\anony\\Desktop\\BenfordTestImages\\OutputImages");
 	
@@ -105,11 +105,11 @@ public class BenfordFactory {
 							String.format("%.2f",chiSquareBenford) + "%");
 					if (chiSquareBenford > BenfordFactory.CHI_MATCH_THRESHOLD) {
 						FileUtils.copyFile(image.getFile(), new File(BenfordFactory.BENFORD_MATCHES.getAbsolutePath() 
-								+ File.separator + String.format("%.5f",chiSquareBenford) + "(" + image.getFile().getName() + ")."
+								+ File.separator + /*String.format("%.5f",chiSquareBenford) + "(" + */image.getFile().getName() + "." 
 								+ FilenameUtils.getExtension(image.getFile().getName())), true);
 					}  else {
 						FileUtils.copyFile(image.getFile(), new File(BenfordFactory.BENFORD_NONMATCHES.getAbsolutePath() 
-								+ File.separator + String.format("%.5f",chiSquareBenford) + "(" + image.getFile().getName() + ")." 
+								+ File.separator + /*String.format("%.5f",chiSquareBenford) + "(" + */image.getFile().getName() + "." 
 								+ FilenameUtils.getExtension(image.getFile().getName())), true);
 					}
 					this.unknownImages.add(image);

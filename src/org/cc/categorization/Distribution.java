@@ -28,4 +28,10 @@ public class Distribution {
 	public double getAllowedCumulativeDeviance() {
 		return allowedCumulativeDeviance;
 	}
+
+	@Override
+	public String toString() {
+		return "Distribution [name=" + name + ", expectedDistribution=" + expectedDistribution
+				+ ", allowedCumulativeDeviance=" + allowedCumulativeDeviance + "]";
+	}
 }

@@ -3,6 +3,7 @@ package org.cc.config;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jdom2.Document;
@@ -14,9 +15,17 @@ public class XMLConfig {
 	public static void main(String[] args) throws IOException, JDOMException {
 		XMLConfig xml = new XMLConfig(XMLConfig.DEFAULT_XML_CONFIG_FILE);
 		for (XMLDistributionConfig xdc : xml.distributionConfigurations.values()) {
-			System.out.println(xdc);
+			System.out.println(xdc.getData());
+		}
+		for (XMLAlterationConfig xac : xml.alterationConfigurations.values()) {
+			System.out.println(xac.getData());
+		}
+		for (XMLGenreConfig xgc : xml.genreConfigurations.values()) {
+			System.out.println(xgc.getData());
 		}
 	}
+	
+	public final static File DEFAULT_XML_CONFIG_FILE = new File("config/Config.xml");
 	
 	private final static String XML_CONFIG_VERSION = "1.0.0";
 	
@@ -25,8 +34,6 @@ public class XMLConfig {
 	private final static String ALTERATION_TAG = "AlterationConfig";
 	
 	private final static String GENRE_TAG = "GenreConfig";
-	
-	private final static File DEFAULT_XML_CONFIG_FILE = new File("config/Config.xml");
 
 	private final Map<Integer, XMLDistributionConfig> distributionConfigurations;
 
@@ -38,9 +45,9 @@ public class XMLConfig {
 
 	public XMLConfig(File configFile) throws JDOMException, IOException {
 		this.configFile = configFile;
-		this.distributionConfigurations = new HashMap<Integer, XMLDistributionConfig>(0);
-		this.alterationConfigurations = new HashMap<Integer, XMLAlterationConfig>(0);
-		this.genreConfigurations = new HashMap<Integer, XMLGenreConfig>(0);
+		this.distributionConfigurations = new LinkedHashMap<Integer, XMLDistributionConfig>(0);
+		this.alterationConfigurations = new LinkedHashMap<Integer, XMLAlterationConfig>(0);
+		this.genreConfigurations = new LinkedHashMap<Integer, XMLGenreConfig>(0);
 		SAXBuilder builder = new SAXBuilder();
 		Document doc = builder.build(configFile);
 		Element root = doc.getRootElement();
@@ -70,13 +77,27 @@ public class XMLConfig {
 
 	private void parseGenreNodes(Element e) {
 		for (Element child : e.getChildren()) {
-			
+			XMLGenreConfig genreConfig = new XMLGenreConfig(child);
+			if (!this.genreConfigurations.containsKey(genreConfig.getId()))
+				this.genreConfigurations.put(genreConfig.getId(), genreConfig);
+			else {
+				System.err.println("[FATAL]\tDuplicate integer as ID for genre configuration node:\t'" 
+					+ genreConfig.getId() + "'");
+				System.exit(-1);
+			}
 		}
 	}
 
 	private void parseAlterationNodes(Element e) {
 		for (Element child : e.getChildren()) {
-			
+			XMLAlterationConfig alterationConfig = new XMLAlterationConfig(child);
+			if (!this.alterationConfigurations.containsKey(alterationConfig.getId()))
+				this.alterationConfigurations.put(alterationConfig.getId(), alterationConfig);
+			else {
+				System.err.println("[FATAL]\tDuplicate integer as ID for alteration configuration node:\t'" 
+					+ alterationConfig.getId() + "'");
+				System.exit(-1);
+			}
 		}
 	}
 
@@ -91,5 +112,21 @@ public class XMLConfig {
 				System.exit(-1);
 			}
 		}
+	}
+
+	public Map<Integer, XMLDistributionConfig> getDistributionConfigurations() {
+		return distributionConfigurations;
+	}
+
+	public Map<Integer, XMLAlterationConfig> getAlterationConfigurations() {
+		return alterationConfigurations;
+	}
+
+	public Map<Integer, XMLGenreConfig> getGenreConfigurations() {
+		return genreConfigurations;
+	}
+
+	public File getConfigFile() {
+		return configFile;
 	}
 }

@@ -6,4 +6,12 @@ module BenfordsLaw {
 	requires org.bytedeco.opencv;
 	requires java.xml;
 	requires jdom;
+	requires java.base;
+	requires com.google.gson;
+	requires httpcore5;
+	requires httpclient5;
+	requires jfreechart;
+	requires jcommon;
+	exports org.cc.stocks;
+	opens org.cc.stocks;
 }

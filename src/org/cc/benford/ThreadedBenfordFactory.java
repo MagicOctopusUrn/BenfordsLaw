@@ -22,7 +22,7 @@ public class ThreadedBenfordFactory {
 		
 	}
 	
-	private final static Integer NUM_THREADS = 19;
+	private final static Integer NUM_THREADS = 10;
 	
 	private final File inputFolder;
 	

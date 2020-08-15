@@ -14,7 +14,7 @@ import org.cc.benford.BenfordFactory;
 
 public class UnknownImage {
 	public static void main(String[] args) throws IOException {
-		UnknownImage ui = new UnknownImage(new File("C:\\Users\\anony\\Desktop\\BenfordTestImages\\all_images_raw_2\\N00002992.jpg"));
+		UnknownImage ui = new UnknownImage(new File("C:\\Users\\anony\\Desktop\\BenfordTestImages\\BonnieTest\\IMG_6566.jpg"));
 		for (int i : ui.pixelRGB) {
 			System.out.println(i);
 		}
@@ -93,26 +93,29 @@ public class UnknownImage {
 				int r = (rgb >> 16) & 0xFF;
 				int g = (rgb >> 8) & 0xFF;
 				int b = rgb & 0xFF;
+				Color color = new Color(r,g,b);
 				HSLColor hsl = new HSLColor(new Color(r,g,b));
-				/*--
-				 * Shitshow doesnt adhere to benfords regularly due to organization of 
-				 * color into 3 spectrums and prioritizing one over the other in numbering.
-				 * Trying to use HSL to match human vision better and possibly just multiply
-				 * the h s and l values to hash it instead.
-				String hexRGB = String.format("%02x", r)
-						+ String.format("%02x", g)
-						+ String.format("%02x", b);
-				int hexRgb = Integer.valueOf(hexRGB, 16);
-				 */
+				
+				/*
 				if (r == g && g == b && b == 0) {
 					this.pixelRGB[index + y] = UnknownImage.MIN_PIXEL_VALUE;
 				} else if (r == g && g == b && b == 255) {
 					this.pixelRGB[index + y] = UnknownImage.MAX_PIXEL_VALUE;
 				} else {
-					if (hsl.getHSL()[0] > 0 && hsl.getHSL()[1] > 0) {
-						this.pixelRGB[index + y] = (int)(hsl.getHSL()[0] * hsl.getHSL()[1] * hsl.getHSL()[2]);
+					this.pixelRGB[index + y] = (int)(hsl.getHSL()[0] * (Math.max(1, hsl.getHSL()[1]) + Math.max(1, hsl.getHSL()[2])));
+				}
+				*/
+				
+
+				if (r == g && g == b && b == 0) {
+					this.pixelRGB[index + y] = UnknownImage.MIN_PIXEL_VALUE;
+				} else if (r == g && g == b && b == 255) {
+					this.pixelRGB[index + y] = UnknownImage.MAX_PIXEL_VALUE;
+				} else {
+					if (hsl.getHSL()[1] > 0) {
+						this.pixelRGB[index + y] = (int)(Math.max(1, hsl.getHSL()[0]) * (Math.max(1, hsl.getHSL()[1]) * Math.max(1, hsl.getHSL()[2])) / 100.0);
 					} else {
-						this.pixelRGB[index + y] = (int)Math.pow(hsl.getHSL()[2], 3.0);
+						this.pixelRGB[index + y] = (int)(Math.max(1, hsl.getHSL()[0]) * Math.pow(Math.max(1, hsl.getHSL()[2]), 2.0) / 100.0);
 					}
 				}
 			}
