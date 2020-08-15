@@ -1,99 +1,68 @@
 package org.cc.benford;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
+import org.cc.image.UnknownImage;
 
 public class ThreadedBenfordFactory {
-	{
-		if (!ThreadedBenfordFactory.BENFORD_MATCHES.exists()) {
-			ThreadedBenfordFactory.BENFORD_MATCHES.mkdirs();
-		}
-		if (!ThreadedBenfordFactory.BENFORD_NONMATCHES.exists()) {
-			ThreadedBenfordFactory.BENFORD_NONMATCHES.mkdirs();
-		}
+	public static final File THREADED_BENFORD_INPUT_FOLDER = new File("C:\\Users\\anony\\Desktop\\BenfordTestImages\\1900TestMaverick");
+	
+	public static void main(String[] args) {
+		ThreadedBenfordFactory tbf = 
+				new ThreadedBenfordFactory(ThreadedBenfordFactory.THREADED_BENFORD_INPUT_FOLDER);
+		tbf.startThreads();
+		tbf.waitForThreads();
+		tbf.printResults();
+		
 	}
 	
-	public static final int NUM_THREADS = 100;
+	private final static Integer NUM_THREADS = 10;
 	
-	private static final Double CHI_MATCH_THRESHOLD = 5.0;
+	private final File inputFolder;
 	
-	/**
-	 * The expected Benford distribution of any truly random multi-variable integers that span
-	 * multiple powers of 10. Any large sample of cumulative integers free of outside influence should be
-	 * distributed according to this sequence.
-	 */
-	public static double[] EXPECTED_BENFORD_FREUQNECIES = {30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6};
+	private final Map<Integer, List<File>> threadFiles;
 	
-	public static final File BENFORD_INPUT_FOLDER = new File("C:\\Users\\anony\\Desktop\\BenfordTestImages\\all_images_raw_2");
+	private final Map<Integer, BenfordFactoryThread> threads;
 	
-	public static final File BENFORD_MATCHES = new File(ThreadedBenfordFactory.BENFORD_INPUT_FOLDER + File.separator + "matches_" + ThreadedBenfordFactory.CHI_MATCH_THRESHOLD);
+	public ThreadedBenfordFactory (File inputFolder) {
+		this.inputFolder = inputFolder;
+		this.threadFiles = new HashMap<Integer, List<File>>(0);
+		this.threads = new HashMap<Integer, BenfordFactoryThread>(0);
+		createBuckets();
+	}
 	
-	public static final File BENFORD_NONMATCHES = new File(ThreadedBenfordFactory.BENFORD_INPUT_FOLDER + File.separator + "nonmatches_" + ThreadedBenfordFactory.CHI_MATCH_THRESHOLD);
-	
-	
-	public static void main(String[] args) throws IOException {
+	public void printResults() {
+		System.out.println("Processing completed, sorting and printing results...");
 		
-		
-		System.out.println("Processing all images from folder:\t" + ThreadedBenfordFactory.BENFORD_INPUT_FOLDER.getName());
-
-		System.out.printf("%5s|%60s|%6s|%6s|%6s|%6s|%6s|%6s|%6s|%6s|%6s|%6s|%14s|\n",
-				"#", "File Name", "f[0]","f[1]","f[2]","f[3]","f[4]","f[5]","f[6]","f[7]","f[8]",
-				"S-Dev", "Chi^2");
-		Map<UnknownImage, Double> sortedImages = new HashMap<UnknownImage, Double>(0);
-		int i = 0;
-		for (File inputImage : 
-			ThreadedBenfordFactory.BENFORD_INPUT_FOLDER.listFiles()) {
-			if (inputImage.isFile()) {
-				UnknownImage image = new UnknownImage(inputImage);
-				double chiSquareBenford = image.calculateBenfordChiSquare();
-				sortedImages.put(image, chiSquareBenford);
-				double[] f = image.getBenfordFrequencies();
-				System.out.printf("%5d|%60s|%6.1f|%6.1f|%6.1f|%6.1f|%6.1f|%6.1f|%6.1f|%6.1f|%6.1f|%6.1f|%6s%8s|\n",
-						i++, image.getFile().getName(),	f[0],f[1],f[2],f[3],f[4],f[5],f[6],f[7],f[8],
-						image.calculateBenfordDeviation(), 
-						((chiSquareBenford > ThreadedBenfordFactory.CHI_MATCH_THRESHOLD) ? "[Pass]" : "[Fail]"),
-						String.format("%.2f",chiSquareBenford) + "%");
-				if (chiSquareBenford > ThreadedBenfordFactory.CHI_MATCH_THRESHOLD) {
-					FileUtils.copyFile(image.getFile(), new File(ThreadedBenfordFactory.BENFORD_MATCHES.getAbsolutePath() 
-							+ File.separator + i + " - " + String.format("%.5f",chiSquareBenford) + "(" + image.getFile().getName() + ")."
-							+ FilenameUtils.getExtension(image.getFile().getName())), true);
-				}  else {
-					FileUtils.copyFile(image.getFile(), new File(ThreadedBenfordFactory.BENFORD_NONMATCHES.getAbsolutePath() 
-							+ File.separator + i + " - " + String.format("%.5f",chiSquareBenford) + "(" + image.getFile().getName() + ")." 
-							+ FilenameUtils.getExtension(image.getFile().getName())), true);
-				}
+		List<UnknownImage> sortedImages = new ArrayList<UnknownImage>(0);
+		for (BenfordFactoryThread bft : this.threads.values()) {
+			if (bft.getFactory() != null) {
+				sortedImages.addAll(bft.getFactory().getUnknownImages());
+			} else {
+				System.err.println(bft.getThreadNumber() + " died probably cause heap-space and didn't create a factory.");
 			}
 		}
 		
-		System.out.println("Processing completed, sorting and printing results...");
-		
-		List<Entry<UnknownImage, Double>> benfordResults = new ArrayList<Entry<UnknownImage, Double>>(sortedImages.entrySet()); 
-		Collections.sort(benfordResults, new Comparator<Entry<UnknownImage, Double>>() {
+		Collections.sort(sortedImages, new Comparator<UnknownImage>() {
 			@Override
-			public int compare(Entry<UnknownImage, Double> a, Entry<UnknownImage, Double> b) {
-				return b.getValue().compareTo(a.getValue());
+			public int compare(UnknownImage a, UnknownImage b) {
+				return Double.valueOf(b.calculateBenfordChiSquare()).compareTo(a.calculateBenfordChiSquare());
 			}
 		});
-		for (Entry<UnknownImage, Double> result : benfordResults) {
-			UnknownImage benfordImage = result.getKey();
-			Double chiSquare = result.getKey().calculateBenfordChiSquare();
+		
+		for (UnknownImage benfordImage : sortedImages) {
+			Double chiSquare = benfordImage.calculateBenfordChiSquare();
 			System.out.println("Input Image:\t" + benfordImage.getFile().getName() + " matches the Benford distribution " + chiSquare + "% of the way.");
-			if (chiSquare > ThreadedBenfordFactory.CHI_MATCH_THRESHOLD) {
-				System.out.println("[P(original) = " + (100.0-chiSquare) + "% < " + ThreadedBenfordFactory.CHI_MATCH_THRESHOLD + "%]:\tImage has likely not been tampered with from the original state.");
+			if (chiSquare > BenfordFactory.CHI_MATCH_THRESHOLD) {
+				System.out.println("[P(original) = " + chiSquare + "% > " + BenfordFactory.CHI_MATCH_THRESHOLD + "%]:\tImage has likely not been tampered with from the original state.");
 			}  else {
-				System.out.println("[P(original) = " + (100.0-chiSquare) + "% > " + ThreadedBenfordFactory.CHI_MATCH_THRESHOLD + "%]:\tImage has been tampered with, compressed or was digitally generated.\r\n"
+				System.out.println("[P(original) = " + chiSquare + "% < " + BenfordFactory.CHI_MATCH_THRESHOLD + "%]:\tImage has been tampered with, compressed or was digitally generated.\r\n"
 						+ "It is also possible the image contains not enough discrete and different data-points.\r\n"
 						+ "E.G. A shot of darkness will not pass, there must be a range of colors to define randomness.");
 			}
@@ -102,8 +71,39 @@ public class ThreadedBenfordFactory {
 				for (int y = 0; y < benfordImage.getBenfordFrequencies()[x]; y++) {
 					bar += "X";
 				}
-				System.out.printf("[%10d | %4.1f%%]\t%1d:\t%s\n", benfordImage.getBenfordCounts()[x], benfordImage.getBenfordFrequencies()[x], x, bar);
+				System.out.printf("[%10d | %4.1f%%]\t%1d:\t%s\n", benfordImage.getBenfordCounts()[x], benfordImage.getBenfordFrequencies()[x], x+1, bar);
 			}
+		}
+	}
+
+	public void waitForThreads() {
+		for (BenfordFactoryThread t : this.threads.values()) {
+			while (t.isAlive()) {
+				try {
+					Thread.sleep(1000L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public void startThreads() {
+		for (int i = 0; i < ThreadedBenfordFactory.NUM_THREADS; i++) {
+			BenfordFactoryThread bft = new BenfordFactoryThread(i, this.threadFiles.get(i));
+			this.threads.put(i, bft);
+			bft.start();
+		}
+	}
+
+	private void createBuckets() {
+		int i = 0;
+		for (File f : this.inputFolder.listFiles()) {
+			int radix = i++ % ThreadedBenfordFactory.NUM_THREADS;
+			if (this.threadFiles.get(radix) == null) {
+				this.threadFiles.put(radix, new ArrayList<File>(0));
+			}
+			this.threadFiles.get(radix).add(f);
 		}
 	}
 }

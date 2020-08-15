@@ -9,13 +9,27 @@ public class BenfordFactoryThread extends Thread {
 	
 	private final List<File> imageList;
 	
+	private volatile BenfordFactory factory; 
+	
 	public BenfordFactoryThread(int threadNumber, List<File> imageList) {
 		this.threadNumber = threadNumber;
 		this.imageList = new ArrayList<File>(imageList);
 	}
 	
 	@Override
-	public void start() {
-		
+	public void run() {
+		factory = new BenfordFactory(this.imageList, this.threadNumber);
+	}
+	
+	public BenfordFactory getFactory() {
+		return this.factory;
+	}
+
+	public int getThreadNumber() {
+		return threadNumber;
+	}
+
+	public List<File> getImageList() {
+		return imageList;
 	}
 }

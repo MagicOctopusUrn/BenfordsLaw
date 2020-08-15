@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConfigXML version="1.0.0">
+	<DistributionConfig>
+		<Distribution id="0" label="DEFAULT_BENFORD">
+			<Expected>
+				<Data key="1" value="30.1"/>
+				<Data key="2" value="17.6"/>
+				<Data key="3" value="12.5"/>
+				<Data key="4" value="9.7"/>
+				<Data key="5" value="7.9"/>
+				<Data key="6" value="6.7"/>
+				<Data key="7" value="5.8"/>
+				<Data key="8" value="5.1"/>
+				<Data key="9" value="4.6"/>
+			</Expected>
+			<AllowedDeviance>5.0</AllowedDeviance>
+		</Distribution>
+	</DistributionConfig>
+	<GenreConfig>
+		<Genre id="0" label="REAL_IMAGE">
+			<Description>
+				Real images are images that are unaltered, cumulative interpretations of photons hitting a detector plate. 
+				These images are not suspected to have been altered in any way, have not been passed through filters and
+				were not created from scratch and should be natural images.
+			</Description>
+			<Distribution allowedDeviance="5.0">0</Distribution>
+		</Genre>
+		<Genre id="1" label="FABRICATED_IMAGE">
+			<Description>
+				Fabricated images are images that were created from scratch, likely distributions that are skewed heavily
+				in favor of a lower number of colors will result in this being triggered. For instance a black and white
+				image with no major color variance (and large color localities) may trigger this. 
+			</Description>
+			<Distribution allowedDeviance="5.0">0</Distribution>
+		</Genre>
+	</GenreConfig>
+	<AlterationConfig>
+		<!-- No Filter -->
+		<Alteration id="0" label="NO_FILTER">
+			<Name>NO-FILTER</Name>
+			<Description>Does nothing.</Description>
+			<Magnitude>0.0</Magnitude>
+			<Method>nothing</Method>
+		</Alteration>
+		
+		<!-- Brighten alterations -->
+		<Alteration id="1" label="BRIGHTEN_10_PERCENT">
+			<Name>BRIGHTEN-10</Name>
+			<Description>Brightens the image 10 percent.</Description>
+			<Magnitude>10.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="2" label="BRIGHTEN_20_PERCENT">
+			<Name>BRIGHTEN-20</Name>
+			<Description>Brightens the image 20 percent.</Description>
+			<Magnitude>20.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="3" label="BRIGHTEN_30_PERCENT">
+			<Name>BRIGHTEN-30</Name>
+			<Description>Brightens the image 30 percent.</Description>
+			<Magnitude>30.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="4" label="BRIGHTEN_40_PERCENT">
+			<Name>BRIGHTEN-40</Name>
+			<Description>Brightens the image 40 percent.</Description>
+			<Magnitude>40.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="5" label="BRIGHTEN_50_PERCENT">
+			<Name>BRIGHTEN-50</Name>
+			<Description>Brightens the image 50 percent.</Description>
+			<Magnitude>50.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="6" label="BRIGHTEN_60_PERCENT">
+			<Name>BRIGHTEN-60</Name>
+			<Description>Brightens the image 60 percent.</Description>
+			<Magnitude>60.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="7" label="BRIGHTEN_70_PERCENT">
+			<Name>BRIGHTEN-70</Name>
+			<Description>Brightens the image 70 percent.</Description>
+			<Magnitude>70.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="8" label="BRIGHTEN_80_PERCENT">
+			<Name>BRIGHTEN-80</Name>
+			<Description>Brightens the image 80 percent.</Description>
+			<Magnitude>80.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="9" label="BRIGHTEN_90_PERCENT">
+			<Name>BRIGHTEN-90</Name>
+			<Description>Brightens the image 90 percent.</Description>
+			<Magnitude>90.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="10" label="BRIGHTEN_100_PERCENT">
+			<Name>BRIGHTEN-100</Name>
+			<Description>Brightens the image 100 percent.</Description>
+			<Magnitude>100.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="11" label="BRIGHTEN_120_PERCENT">
+			<Name>BRIGHTEN-120</Name>
+			<Description>Brightens the image 120 percent.</Description>
+			<Magnitude>120.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="12" label="BRIGHTEN_140_PERCENT">
+			<Name>BRIGHTEN-140</Name>
+			<Description>Brightens the image 140 percent.</Description>
+			<Magnitude>140.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="13" label="BRIGHTEN_250_PERCENT">
+			<Name>BRIGHTEN-160</Name>
+			<Description>Brightens the image 160 percent.</Description>
+			<Magnitude>160.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="14" label="BRIGHTEN_180_PERCENT">
+			<Name>BRIGHTEN-180</Name>
+			<Description>Brightens the image 180 percent.</Description>
+			<Magnitude>180.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		<Alteration id="15" label="BRIGHTEN_200_PERCENT">
+			<Name>BRIGHTEN-200</Name>
+			<Description>Brightens the image 200 percent.</Description>
+			<Magnitude>200.0</Magnitude>
+			<Method>brighten</Method>
+		</Alteration>
+		
+		<!-- Darken alterations -->
+		<Alteration id="101" label="DARKEN_10_PERCENT">
+			<Name>DARKEN-10</Name>
+			<Description>Darkens the image 10 percent.</Description>
+			<Magnitude>10.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="102" label="DARKEN_20_PERCENT">
+			<Name>DARKEN-20</Name>
+			<Description>Darkens the image 20 percent.</Description>
+			<Magnitude>20.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="103" label="DARKEN_30_PERCENT">
+			<Name>DARKEN-30</Name>
+			<Description>Darkens the image 30 percent.</Description>
+			<Magnitude>30.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="104" label="DARKEN_40_PERCENT">
+			<Name>DARKEN-40</Name>
+			<Description>Darkens the image 40 percent.</Description>
+			<Magnitude>40.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="105" label="DARKEN_50_PERCENT">
+			<Name>DARKEN-50</Name>
+			<Description>Darkens the image 50 percent.</Description>
+			<Magnitude>50.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="106" label="DARKEN_60_PERCENT">
+			<Name>DARKEN-60</Name>
+			<Description>Darkens the image 60 percent.</Description>
+			<Magnitude>60.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="107" label="DARKEN_70_PERCENT">
+			<Name>DARKEN-70</Name>
+			<Description>Darkens the image 70 percent.</Description>
+			<Magnitude>70.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="108" label="DARKEN_80_PERCENT">
+			<Name>DARKEN-80</Name>
+			<Description>Darkens the image 80 percent.</Description>
+			<Magnitude>80.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		<Alteration id="109" label="DARKEN_90_PERCENT">
+			<Name>DARKEN-90</Name>
+			<Description>Darkens the image 90 percent.</Description>
+			<Magnitude>90.0</Magnitude>
+			<Method>darken</Method>
+		</Alteration>
+		
+		<!-- Saturation Alterations -->
+		<Alteration id="200" label="SATURATE_0_PERCENT">
+			<Name>SATURATE-0</Name>
+			<Description>Saturates the image 0 percent.</Description>
+			<Magnitude>0.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="201" label="SATURATE_10_PERCENT">
+			<Name>SATURATE-10</Name>
+			<Description>Saturates the image 10 percent.</Description>
+			<Magnitude>10.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="202" label="SATURATE_20_PERCENT">
+			<Name>SATURATE-20</Name>
+			<Description>Saturates the image 20 percent.</Description>
+			<Magnitude>20.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="203" label="SATURATE_30_PERCENT">
+			<Name>SATURATE-30</Name>
+			<Description>Saturates the image 30 percent.</Description>
+			<Magnitude>30.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="204" label="SATURATE_40_PERCENT">
+			<Name>SATURATE-40</Name>
+			<Description>Saturates the image 40 percent.</Description>
+			<Magnitude>40.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="205" label="SATURATE_50_PERCENT">
+			<Name>SATURATE-50</Name>
+			<Description>Saturates the image 50 percent.</Description>
+			<Magnitude>50.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="206" label="SATURATE_60_PERCENT">
+			<Name>SATURATE-60</Name>
+			<Description>Saturates the image 60 percent.</Description>
+			<Magnitude>60.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="207" label="SATURATE_70_PERCENT">
+			<Name>SATURATE-70</Name>
+			<Description>Saturates the image 70 percent.</Description>
+			<Magnitude>70.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="208" label="SATURATE_80_PERCENT">
+			<Name>SATURATE-80</Name>
+			<Description>Saturates the image 80 percent.</Description>
+			<Magnitude>80.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="209" label="SATURATE_90_PERCENT">
+			<Name>SATURATE-90</Name>
+			<Description>Saturates the image 90 percent.</Description>
+			<Magnitude>90.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		<Alteration id="210" label="SATURATE_100_PERCENT">
+			<Name>SATURATE-100</Name>
+			<Description>Saturates the image 100 percent.</Description>
+			<Magnitude>100.0</Magnitude>
+			<Method>saturate</Method>
+		</Alteration>
+		
+		<!-- Desaturation Alterations -->
+		<Alteration id="300" label="DESATURATE_0_PERCENT">
+			<Name>DESATURATE-0</Name>
+			<Description>Desaturates the image 0 percent.</Description>
+			<Magnitude>0.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="301" label="DESATURATE_10_PERCENT">
+			<Name>DESATURATE-10</Name>
+			<Description>Desaturates the image 10 percent.</Description>
+			<Magnitude>10.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="302" label="DESATURATE_20_PERCENT">
+			<Name>DESATURATE-20</Name>
+			<Description>Desaturates the image 20 percent.</Description>
+			<Magnitude>20.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="303" label="DESATURATE_30_PERCENT">
+			<Name>DESATURATE-30</Name>
+			<Description>Desaturates the image 30 percent.</Description>
+			<Magnitude>30.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="304" label="DESATURATE_40_PERCENT">
+			<Name>DESATURATE-40</Name>
+			<Description>Desaturates the image 40 percent.</Description>
+			<Magnitude>40.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="305" label="DESATURATE_50_PERCENT">
+			<Name>DESATURATE-50</Name>
+			<Description>Desaturates the image 50 percent.</Description>
+			<Magnitude>50.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="306" label="DESATURATE_60_PERCENT">
+			<Name>DESATURATE-60</Name>
+			<Description>Desaturates the image 60 percent.</Description>
+			<Magnitude>60.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="307" label="DESATURATE_70_PERCENT">
+			<Name>DESATURATE-70</Name>
+			<Description>Desaturates the image 70 percent.</Description>
+			<Magnitude>70.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="308" label="DESATURATE_80_PERCENT">
+			<Name>DESATURATE-80</Name>
+			<Description>Desaturates the image 80 percent.</Description>
+			<Magnitude>80.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="309" label="DESATURATE_90_PERCENT">
+			<Name>DESATURATE-90</Name>
+			<Description>Desaturates the image 90 percent.</Description>
+			<Magnitude>90.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		<Alteration id="310" label="DESATURATE_100_PERCENT">
+			<Name>DESATURATE-100</Name>
+			<Description>Desaturates the image 100 percent.</Description>
+			<Magnitude>100.0</Magnitude>
+			<Method>desaturate</Method>
+		</Alteration>
+		
+		<!-- Hue Offset Methods -->
+		<Alteration id="401" label="HUE_OFFSET_45_DEGREES">
+			<Name>HUE-OFFSET-45</Name>
+			<Description>Offsets the hue of the image by 45 degrees.</Description>
+			<Magnitude>45.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+		<Alteration id="402" label="HUE_OFFSET_90_DEGREES">
+			<Name>HUE-OFFSET-90</Name>
+			<Description>Offsets the hue of the image by 90 degrees.</Description>
+			<Magnitude>90.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+		<Alteration id="403" label="HUE_OFFSET_135_DEGREES">
+			<Name>HUE-OFFSET-135</Name>
+			<Description>Offsets the hue of the image by 135 degrees.</Description>
+			<Magnitude>135.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+		<Alteration id="404" label="HUE_OFFSET_180_DEGREES">
+			<Name>HUE-OFFSET-180</Name>
+			<Description>Offsets the hue of the image by 180 degrees.</Description>
+			<Magnitude>180.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+		<Alteration id="405" label="HUE_OFFSET_225_DEGREES">
+			<Name>HUE-OFFSET-225</Name>
+			<Description>Offsets the hue of the image by 225 degrees.</Description>
+			<Magnitude>225.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+		<Alteration id="406" label="HUE_OFFSET_270_DEGREES">
+			<Name>HUE-OFFSET-270</Name>
+			<Description>Offsets the hue of the image by 270 degrees.</Description>
+			<Magnitude>270.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+		<Alteration id="407" label="HUE_OFFSET_315_DEGREES">
+			<Name>HUE-OFFSET-315</Name>
+			<Description>Offsets the hue of the image by 315 degrees.</Description>
+			<Magnitude>315.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+		<Alteration id="408" label="HUE_OFFSET_360_DEGREES">
+			<Name>HUE-OFFSET-360</Name>
+			<Description>Offsets the hue of the image by 360 degrees.</Description>
+			<Magnitude>360.0</Magnitude>
+			<Method>hueOffset</Method>
+		</Alteration>
+	</AlterationConfig>
+</ConfigXML>

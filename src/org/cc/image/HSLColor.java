@@ -107,15 +107,12 @@ public class HSLColor {
 		return toRGB(hsl[0], hsl[1], percent, alpha);
 	}
 
-	/**
-	 * Create a RGB Color object based on this HSLColor with a different Saturation
-	 * value. The percent specified is an absolute value.
-	 *
-	 * @param percent - the Saturation value between 0 - 100
-	 * @return the RGB Color object
-	 */
-	public Color adjustSaturation(float percent) {
-		return toRGB(hsl[0], percent, hsl[2], alpha);
+	public Color desaturate(float percent) {
+		return toRGB(hsl[0], Math.max(0.0f, ((100.0f - percent)/100.f)*hsl[1]), hsl[2], alpha);
+	}
+
+	public Color saturate(float percent) {
+		return toRGB(hsl[0], Math.min(100.0f, ((100.0f + percent)/100.f)*hsl[1]), hsl[2], alpha);
 	}
 
 	/**
@@ -146,6 +143,11 @@ public class HSLColor {
 		float l = Math.min(100.0f, hsl[2] * multiplier);
 
 		return toRGB(hsl[0], hsl[1], l, alpha);
+	}
+	
+	public Color offsetHue(float degrees) {
+		float hue = (hsl[0] + degrees) % 360.0f;
+		return toRGB(hue, hsl[1], hsl[2]);
 	}
 
 	/**
